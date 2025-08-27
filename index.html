@@ -1,0 +1,29 @@
+<!doctype html><html><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Whitelist Panel – Login</title>
+<link rel="stylesheet" href="/public/style.css"/>
+</head><body>
+<div class="container">
+  <div class="card">
+    <div class="title">🔐 Admin Login <span class="badge">Private</span></div>
+    <div class="row">
+      <input id="password" type="password" class="input" placeholder="Admin password"/>
+      <button class="btn" onclick="login()">Login</button>
+    </div>
+    <div id="msg" class="footer"></div>
+  </div>
+</div>
+<script>
+async function login(){
+  const password=document.getElementById('password').value.trim();
+  document.getElementById('msg').textContent='Logging in...';
+  try{
+    const res=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password})});
+    const data=await res.json();
+    if(!res.ok||!data.token){throw new Error(data.error||'Login gagal');}
+    localStorage.setItem('token',data.token);
+    location.href='/dashboard.html';
+  }catch(e){document.getElementById('msg').textContent='❌ '+e.message;}
+}
+</script>
+</body></html>
